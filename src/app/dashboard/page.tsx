@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { KpiSummary } from "@/components/dashboard/kpi-summary";
 import { RevenueChart } from "@/components/dashboard/revenue-chart";
+import { SiteComparisonChart } from "@/components/dashboard/site-comparison-chart";
 import { SiteCard } from "@/components/dashboard/site-card";
 import { EmptyState } from "@/components/dashboard/empty-state";
 import type { RevenueHistoryRow, Site } from "@/types/site";
@@ -34,7 +35,10 @@ export default async function DashboardPage() {
           activeSiteCount={activeSiteCount}
         />
 
-        <RevenueChart sites={siteList} revenueHistory={revenueList} />
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <RevenueChart sites={siteList} revenueHistory={revenueList} />
+          <SiteComparisonChart sites={siteList} />
+        </div>
 
         <div>
           <h2 className="mb-3 text-sm font-medium text-muted-foreground">サイト一覧</h2>
