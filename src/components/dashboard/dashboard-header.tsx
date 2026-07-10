@@ -11,19 +11,21 @@ export function DashboardHeader() {
   const [addOpen, setAddOpen] = useState(false);
 
   return (
-    <div className="flex items-center justify-between gap-4">
-      <h1 className="text-xl font-semibold tracking-tight text-zinc-900">MySites Dashboard</h1>
-      <div className="flex items-center gap-2">
-        <SyncButton label="全体を同期" />
-        <Button size="sm" onClick={() => setAddOpen(true)}>
-          <Plus className="size-4" />
-          サイト追加
-        </Button>
-        <form action={signOut}>
-          <Button type="submit" variant="ghost" size="icon" title="ログアウト">
-            <LogOut className="size-4" />
+    <div className="sticky top-0 z-10 border-b border-border/60 bg-background/70 backdrop-blur-md">
+      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-6 py-3">
+        <h1 className="text-xl font-semibold tracking-tight text-foreground">MySites Dashboard</h1>
+        <div className="flex items-center gap-2">
+          <SyncButton label="全体を同期" />
+          <Button size="sm" onClick={() => setAddOpen(true)}>
+            <Plus className="size-4" />
+            サイト追加
           </Button>
-        </form>
+          <form action={signOut}>
+            <Button type="submit" variant="ghost" size="icon" title="ログアウト">
+              <LogOut className="size-4" />
+            </Button>
+          </form>
+        </div>
       </div>
 
       <SiteFormDialog open={addOpen} onOpenChange={setAddOpen} />

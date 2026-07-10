@@ -50,18 +50,18 @@ export function SiteCard({ site }: { site: Site }) {
   }
 
   return (
-    <Card className="border-zinc-200 shadow-sm">
+    <Card className="shadow-sm">
       <CardHeader className="flex flex-row items-start justify-between gap-2 space-y-0">
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <h3 className="truncate font-semibold text-zinc-900">{site.name}</h3>
+            <h3 className="truncate font-semibold text-foreground">{site.name}</h3>
             <StatusBadge status={site.status} />
           </div>
           <a
             href={site.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="block truncate text-sm text-zinc-500 hover:text-blue-600 hover:underline"
+            className="block truncate text-sm text-muted-foreground hover:text-primary hover:underline"
           >
             {site.url}
           </a>
@@ -93,28 +93,28 @@ export function SiteCard({ site }: { site: Site }) {
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <p className="text-xs text-zinc-500">PV(30日)</p>
-            <p className="text-lg font-semibold text-zinc-900">{formatNumber(site.pv)}</p>
+            <p className="text-xs text-muted-foreground">PV(30日)</p>
+            <p className="text-lg font-semibold text-foreground">{formatNumber(site.pv)}</p>
           </div>
           <div>
-            <p className="text-xs text-zinc-500">今月の収益</p>
-            <p className="text-lg font-semibold text-zinc-900">¥{formatNumber(site.revenue)}</p>
+            <p className="text-xs text-muted-foreground">今月の収益</p>
+            <p className="text-lg font-semibold text-foreground">¥{formatNumber(site.revenue)}</p>
           </div>
         </div>
 
         {expanded && (
-          <div className="grid grid-cols-2 gap-3 border-t border-zinc-100 pt-3">
+          <div className="grid grid-cols-2 gap-3 border-t border-border pt-3">
             <div>
-              <p className="text-xs text-zinc-500">本日のPV</p>
-              <p className="text-sm font-medium text-zinc-700">{formatNumber(site.pv_today)}</p>
+              <p className="text-xs text-muted-foreground">本日のPV</p>
+              <p className="text-sm font-medium text-foreground/80">{formatNumber(site.pv_today)}</p>
             </div>
             <div>
-              <p className="text-xs text-zinc-500">累計PV</p>
-              <p className="text-sm font-medium text-zinc-700">{formatNumber(site.pv_total)}</p>
+              <p className="text-xs text-muted-foreground">累計PV</p>
+              <p className="text-sm font-medium text-foreground/80">{formatNumber(site.pv_total)}</p>
             </div>
             <div className="col-span-2">
-              <p className="text-xs text-zinc-500">最終同期</p>
-              <p className="text-sm font-medium text-zinc-700">{formatDateTime(site.last_synced_at)}</p>
+              <p className="text-xs text-muted-foreground">最終同期</p>
+              <p className="text-sm font-medium text-foreground/80">{formatDateTime(site.last_synced_at)}</p>
             </div>
           </div>
         )}
@@ -123,7 +123,7 @@ export function SiteCard({ site }: { site: Site }) {
           <Button
             variant="ghost"
             size="sm"
-            className="h-auto p-0 text-xs text-zinc-500 hover:bg-transparent hover:text-zinc-700"
+            className="h-auto p-0 text-xs text-muted-foreground hover:bg-transparent hover:text-foreground"
             onClick={() => setExpanded((v) => !v)}
           >
             {expanded ? (

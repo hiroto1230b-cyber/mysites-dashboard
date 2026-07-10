@@ -54,15 +54,15 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="flex flex-1 items-center justify-center bg-white px-4">
-      <Card className="w-full max-w-sm border-zinc-200 shadow-sm">
+    <div className="flex flex-1 items-center justify-center bg-background px-4">
+      <Card className="w-full max-w-sm shadow-sm">
         <CardHeader>
           <CardTitle className="text-xl">新規登録</CardTitle>
           <CardDescription>MySites Dashboardのアカウントを作成します</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {done ? (
-            <p className="text-sm text-zinc-600">
+            <p className="text-sm text-muted-foreground">
               確認メールを送信しました。メール内のリンクをクリックしてログインしてください。
             </p>
           ) : (
@@ -97,10 +97,10 @@ export default function SignupPage() {
 
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t border-zinc-200" />
+                  <span className="w-full border-t border-border" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-white px-2 text-zinc-400">または</span>
+                  <span className="bg-card px-2 text-muted-foreground">または</span>
                 </div>
               </div>
 
@@ -110,9 +110,9 @@ export default function SignupPage() {
             </>
           )}
 
-          <p className="text-center text-sm text-zinc-500">
+          <p className="text-center text-sm text-muted-foreground">
             すでにアカウントをお持ちの方は{" "}
-            <Link href="/login" className="font-medium text-blue-600 hover:underline">
+            <Link href="/login" className="font-medium text-primary hover:underline">
               ログイン
             </Link>
           </p>

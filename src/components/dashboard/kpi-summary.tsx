@@ -22,10 +22,10 @@ export function KpiSummary({ totalPv, totalPvToday, totalRevenue, activeSiteCoun
   return (
     <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
       {items.map((item) => (
-        <Card key={item.label} className="border-zinc-200 shadow-sm">
+        <Card key={item.label} className="shadow-sm">
           <CardContent className="py-2">
-            <p className="text-xs text-zinc-500">{item.label}</p>
-            <p className="mt-1 text-2xl font-semibold tracking-tight text-zinc-900">{item.value}</p>
+            <p className="text-xs text-muted-foreground">{item.label}</p>
+            <p className="mt-1 text-2xl font-semibold tracking-tight text-foreground">{item.value}</p>
           </CardContent>
         </Card>
       ))}

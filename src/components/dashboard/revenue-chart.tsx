@@ -43,7 +43,7 @@ export function RevenueChart({ sites, revenueHistory }: RevenueChartProps) {
   }, [revenueHistory, selected]);
 
   return (
-    <Card className="border-zinc-200 shadow-sm">
+    <Card className="shadow-sm">
       <CardHeader className="flex flex-row items-center justify-between space-y-0">
         <CardTitle className="text-base font-semibold">月次収益推移</CardTitle>
         <Select value={selected} onValueChange={(value) => setSelected(value ?? ALL_SITES)}>
@@ -64,20 +64,20 @@ export function RevenueChart({ sites, revenueHistory }: RevenueChartProps) {
       </CardHeader>
       <CardContent>
         {chartData.length === 0 ? (
-          <p className="py-12 text-center text-sm text-zinc-400">
+          <p className="py-12 text-center text-sm text-muted-foreground">
             まだ収益データがありません。サイトの「収益を記録」から登録してください。
           </p>
         ) : (
           <ResponsiveContainer width="100%" height={260}>
             <LineChart data={chartData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-              <XAxis dataKey="month" tick={{ fontSize: 12, fill: "#71717a" }} axisLine={{ stroke: "#e4e4e7" }} tickLine={false} />
-              <YAxis tick={{ fontSize: 12, fill: "#71717a" }} axisLine={false} tickLine={false} width={60} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e5ea" />
+              <XAxis dataKey="month" tick={{ fontSize: 12, fill: "#8e8e93" }} axisLine={{ stroke: "#e5e5ea" }} tickLine={false} />
+              <YAxis tick={{ fontSize: 12, fill: "#8e8e93" }} axisLine={false} tickLine={false} width={60} />
               <Tooltip
                 formatter={(value) => [`¥${new Intl.NumberFormat("ja-JP").format(Number(value))}`, "収益"]}
-                contentStyle={{ borderRadius: 8, borderColor: "#e4e4e7", fontSize: 12 }}
+                contentStyle={{ borderRadius: 12, borderColor: "#e5e5ea", fontSize: 12 }}
               />
-              <Line type="monotone" dataKey="revenue" stroke="#2563eb" strokeWidth={2} dot={{ r: 3 }} />
+              <Line type="monotone" dataKey="revenue" stroke="#007aff" strokeWidth={2.5} dot={{ r: 3 }} />
             </LineChart>
           </ResponsiveContainer>
         )}

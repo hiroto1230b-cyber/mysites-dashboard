@@ -23,29 +23,31 @@ export default async function DashboardPage() {
   const activeSiteCount = siteList.filter((s) => s.status === "active").length;
 
   return (
-    <div className="mx-auto w-full max-w-6xl flex-1 space-y-6 px-6 py-8">
+    <div className="flex-1">
       <DashboardHeader />
 
-      <KpiSummary
-        totalPv={totalPv}
-        totalPvToday={totalPvToday}
-        totalRevenue={totalRevenue}
-        activeSiteCount={activeSiteCount}
-      />
+      <div className="mx-auto w-full max-w-6xl space-y-6 px-6 py-6">
+        <KpiSummary
+          totalPv={totalPv}
+          totalPvToday={totalPvToday}
+          totalRevenue={totalRevenue}
+          activeSiteCount={activeSiteCount}
+        />
 
-      <RevenueChart sites={siteList} revenueHistory={revenueList} />
+        <RevenueChart sites={siteList} revenueHistory={revenueList} />
 
-      <div>
-        <h2 className="mb-3 text-sm font-medium text-zinc-500">サイト一覧</h2>
-        {siteList.length === 0 ? (
-          <EmptyState />
-        ) : (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {siteList.map((site) => (
-              <SiteCard key={site.id} site={site} />
-            ))}
-          </div>
-        )}
+        <div>
+          <h2 className="mb-3 text-sm font-medium text-muted-foreground">サイト一覧</h2>
+          {siteList.length === 0 ? (
+            <EmptyState />
+          ) : (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {siteList.map((site) => (
+                <SiteCard key={site.id} site={site} />
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
