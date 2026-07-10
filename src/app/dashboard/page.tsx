@@ -1,8 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { KpiSummary } from "@/components/dashboard/kpi-summary";
-import { RevenueChart } from "@/components/dashboard/revenue-chart";
-import { PvChart } from "@/components/dashboard/pv-chart";
+import { MonthlyTrendChart } from "@/components/dashboard/monthly-trend-chart";
 import { SiteComparisonChart } from "@/components/dashboard/site-comparison-chart";
 import { SiteCard } from "@/components/dashboard/site-card";
 import { EmptyState } from "@/components/dashboard/empty-state";
@@ -39,8 +38,7 @@ export default async function DashboardPage() {
         />
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <RevenueChart sites={siteList} revenueHistory={revenueList} />
-          <PvChart sites={siteList} pvHistory={pvHistoryList} />
+          <MonthlyTrendChart sites={siteList} revenueHistory={revenueList} pvHistory={pvHistoryList} />
           <SiteComparisonChart sites={siteList} />
         </div>
 
