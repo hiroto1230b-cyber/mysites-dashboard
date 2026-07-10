@@ -25,3 +25,12 @@ export interface RevenueHistoryRow {
   revenue: number;
   created_at: string;
 }
+
+export interface PvHistoryRow {
+  id: string;
+  site_id: string;
+  user_id: string;
+  year_month: string;
+  pv: number;
+  created_at: string;
+}

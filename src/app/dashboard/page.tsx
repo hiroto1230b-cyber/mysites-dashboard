@@ -2,21 +2,24 @@ import { createClient } from "@/lib/supabase/server";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { KpiSummary } from "@/components/dashboard/kpi-summary";
 import { RevenueChart } from "@/components/dashboard/revenue-chart";
+import { PvChart } from "@/components/dashboard/pv-chart";
 import { SiteComparisonChart } from "@/components/dashboard/site-comparison-chart";
 import { SiteCard } from "@/components/dashboard/site-card";
 import { EmptyState } from "@/components/dashboard/empty-state";
-import type { RevenueHistoryRow, Site } from "@/types/site";
+import type { PvHistoryRow, RevenueHistoryRow, Site } from "@/types/site";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
 
-  const [{ data: sites }, { data: revenueHistory }] = await Promise.all([
+  const [{ data: sites }, { data: revenueHistory }, { data: pvHistory }] = await Promise.all([
     supabase.from("sites").select("*").order("created_at", { ascending: true }),
     supabase.from("revenue_history").select("*").order("year_month", { ascending: true }),
+    supabase.from("pv_history").select("*").order("year_month", { ascending: true }),
   ]);
 
   const siteList = (sites ?? []) as Site[];
   const revenueList = (revenueHistory ?? []) as RevenueHistoryRow[];
+  const pvHistoryList = (pvHistory ?? []) as PvHistoryRow[];
 
   const totalPv = siteList.reduce((sum, s) => sum + s.pv, 0);
   const totalPvToday = siteList.reduce((sum, s) => sum + s.pv_today, 0);
@@ -37,6 +40,7 @@ export default async function DashboardPage() {
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <RevenueChart sites={siteList} revenueHistory={revenueList} />
+          <PvChart sites={siteList} pvHistory={pvHistoryList} />
           <SiteComparisonChart sites={siteList} />
         </div>
 

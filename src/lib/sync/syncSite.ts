@@ -17,9 +17,14 @@ export interface SyncResult {
   error?: string;
 }
 
+function currentMonthStart() {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01`;
+}
+
 export async function syncSite(
   supabase: SupabaseClient,
-  site: Pick<Site, "id" | "custom_api_url" | "api_secret_key">
+  site: Pick<Site, "id" | "user_id" | "custom_api_url" | "api_secret_key">
 ): Promise<SyncResult> {
   try {
     const controller = new AbortController();
@@ -53,6 +58,11 @@ export async function syncSite(
       .eq("id", site.id);
 
     if (error) throw new Error(error.message);
+
+    await supabase.from("pv_history").upsert(
+      { site_id: site.id, user_id: site.user_id, year_month: currentMonthStart(), pv: data.pv },
+      { onConflict: "site_id,year_month" }
+    );
 
     return { siteId: site.id, ok: true };
   } catch (err) {

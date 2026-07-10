@@ -18,7 +18,7 @@ export async function POST(request: Request) {
 
   let query = supabase
     .from("sites")
-    .select("id, custom_api_url, api_secret_key")
+    .select("id, user_id, custom_api_url, api_secret_key")
     .eq("user_id", user.id)
     .eq("status", "active" as const);
 
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
   if (siteId) {
     query = supabase
       .from("sites")
-      .select("id, custom_api_url, api_secret_key")
+      .select("id, user_id, custom_api_url, api_secret_key")
       .eq("user_id", user.id)
       .eq("id", siteId);
   }

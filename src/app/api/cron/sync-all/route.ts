@@ -12,7 +12,7 @@ export async function GET(request: Request) {
 
   const { data: sites, error } = await supabase
     .from("sites")
-    .select("id, custom_api_url, api_secret_key")
+    .select("id, user_id, custom_api_url, api_secret_key")
     .eq("status", "active");
 
   if (error) {
