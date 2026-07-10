@@ -5,6 +5,7 @@ import {
   Bar,
   ComposedChart,
   Line,
+  LabelList,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -93,7 +94,7 @@ export function MonthlyTrendChart({ sites, revenueHistory, pvHistory }: MonthlyT
           </p>
         ) : (
           <ResponsiveContainer width="100%" height={280}>
-            <ComposedChart data={chartData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+            <ComposedChart data={chartData} margin={{ top: 24, right: 8, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#e5e5ea" />
               <XAxis
                 dataKey="month"
@@ -131,7 +132,14 @@ export function MonthlyTrendChart({ sites, revenueHistory, pvHistory }: MonthlyT
                 formatter={(value) => (value === "revenue" ? "収益" : "PV(30日)")}
                 wrapperStyle={{ fontSize: 12 }}
               />
-              <Bar yAxisId="pv" dataKey="pv" fill="#34c759" radius={[6, 6, 0, 0]} barSize={28} />
+              <Bar yAxisId="pv" dataKey="pv" fill="#34c759" radius={[6, 6, 0, 0]} barSize={28}>
+                <LabelList
+                  dataKey="pv"
+                  position="top"
+                  formatter={(value) => new Intl.NumberFormat("ja-JP").format(Number(value ?? 0))}
+                  style={{ fontSize: 11, fill: "#3a3a3c" }}
+                />
+              </Bar>
               <Line
                 yAxisId="revenue"
                 type="monotone"
