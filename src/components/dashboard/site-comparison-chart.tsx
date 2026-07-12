@@ -4,7 +4,6 @@ import { useState } from "react";
 import {
   Bar,
   ComposedChart,
-  Line,
   LabelList,
   ResponsiveContainer,
   Tooltip,
@@ -90,7 +89,7 @@ export function SiteComparisonChart({ sites }: SiteComparisonChartProps) {
                 formatter={(value) => (value === "revenue" ? "今月の収益" : pvLabel)}
                 wrapperStyle={{ fontSize: 12 }}
               />
-              <Bar yAxisId="pv" dataKey="pv" fill="#007aff" radius={[6, 6, 0, 0]} barSize={32}>
+              <Bar yAxisId="pv" dataKey="pv" fill="#007aff" radius={[6, 6, 0, 0]} barSize={28}>
                 <LabelList
                   dataKey="pv"
                   position="top"
@@ -98,14 +97,14 @@ export function SiteComparisonChart({ sites }: SiteComparisonChartProps) {
                   style={{ fontSize: 11, fill: "#3a3a3c" }}
                 />
               </Bar>
-              <Line
-                yAxisId="revenue"
-                type="monotone"
-                dataKey="revenue"
-                stroke="#ff9500"
-                strokeWidth={2.5}
-                dot={{ r: 4 }}
-              />
+              <Bar yAxisId="revenue" dataKey="revenue" fill="#ff9500" radius={[6, 6, 0, 0]} barSize={28}>
+                <LabelList
+                  dataKey="revenue"
+                  position="top"
+                  formatter={(value) => `¥${new Intl.NumberFormat("ja-JP").format(Number(value ?? 0))}`}
+                  style={{ fontSize: 11, fill: "#3a3a3c" }}
+                />
+              </Bar>
             </ComposedChart>
           </ResponsiveContainer>
         )}
