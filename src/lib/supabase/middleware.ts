@@ -2,6 +2,13 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 export async function updateSession(request: NextRequest) {
+  // cron は Vercel のスケジューラから未ログインで叩かれる。ルート側で
+  // CRON_SECRET を検証しているので、ここでログインへ飛ばしてはいけない。
+  // セッション確認より前に抜ける(不要な往復を省く)。
+  if (request.nextUrl.pathname.startsWith("/api/cron/")) {
+    return NextResponse.next({ request });
+  }
+
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
