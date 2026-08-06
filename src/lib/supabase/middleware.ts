@@ -39,6 +39,18 @@ export async function updateSession(request: NextRequest) {
     request.nextUrl.pathname.startsWith("/signup") ||
     request.nextUrl.pathname.startsWith("/auth");
 
+  // API はログイン画面へ飛ばさず、JSONで401を返す。
+  //
+  // リダイレクトすると fetch が自動で追従してログインページのHTMLを受け取り、
+  // 呼び出し側の res.json() が失敗する。結果、セッション切れなのに
+  // 「同期に失敗しました」と表示され、原因が分からなくなる。
+  if (!user && request.nextUrl.pathname.startsWith("/api/")) {
+    return NextResponse.json(
+      { error: "セッションの有効期限が切れています。ログインし直してください" },
+      { status: 401 }
+    );
+  }
+
   if (!user && !isAuthPage) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";

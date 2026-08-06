@@ -27,6 +27,14 @@ export function SyncButton({ siteId, label = "同期", variant = "outline", size
         body: JSON.stringify(siteId ? { siteId } : {}),
       });
 
+      // セッション切れを「同期の失敗」と混同させない。
+      // 原因が違えば、やることも違う(再ログインが必要)
+      if (res.status === 401) {
+        toast.error("ログインの有効期限が切れています。ログインし直してください");
+        router.push("/login");
+        return;
+      }
+
       if (!res.ok) {
         toast.error("同期に失敗しました");
         return;
