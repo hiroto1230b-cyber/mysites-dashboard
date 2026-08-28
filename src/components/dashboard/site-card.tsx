@@ -16,8 +16,11 @@ import { StatusBadge } from "@/components/dashboard/status-badge";
 import { SyncButton } from "@/components/dashboard/sync-button";
 import { SiteFormDialog } from "@/components/dashboard/site-form-dialog";
 import { RevenueFormDialog } from "@/components/dashboard/revenue-form-dialog";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { setSiteActive } from "@/app/dashboard/actions";
 import type { Site } from "@/types/site";
+
+type PvPeriod = "daily" | "weekly" | "monthly";
 
 function formatNumber(n: number) {
   return new Intl.NumberFormat("ja-JP").format(n);
@@ -33,11 +36,16 @@ function formatDateTime(iso: string | null) {
   });
 }
 
-export function SiteCard({ site }: { site: Site }) {
+export function SiteCard({ site, weeklyPv }: { site: Site; weeklyPv: number }) {
   const router = useRouter();
   const [expanded, setExpanded] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [revenueOpen, setRevenueOpen] = useState(false);
+  const [pvPeriod, setPvPeriod] = useState<PvPeriod>("monthly");
+
+  const pvValue =
+    pvPeriod === "daily" ? site.pv_today : pvPeriod === "weekly" ? weeklyPv : site.pv;
+  const pvLabel = pvPeriod === "daily" ? "PV(本日)" : pvPeriod === "weekly" ? "PV(週次)" : "PV(30日)";
 
   async function handleToggleActive() {
     try {
@@ -91,10 +99,18 @@ export function SiteCard({ site }: { site: Site }) {
           </p>
         )}
 
+        <Tabs value={pvPeriod} onValueChange={(value) => setPvPeriod((value as PvPeriod) ?? "monthly")}>
+          <TabsList className="w-full">
+            <TabsTrigger value="daily" className="flex-1">日次</TabsTrigger>
+            <TabsTrigger value="weekly" className="flex-1">週次</TabsTrigger>
+            <TabsTrigger value="monthly" className="flex-1">月次</TabsTrigger>
+          </TabsList>
+        </Tabs>
+
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <p className="text-xs text-muted-foreground">PV(30日)</p>
-            <p className="text-lg font-semibold text-foreground">{formatNumber(site.pv)}</p>
+            <p className="text-xs text-muted-foreground">{pvLabel}</p>
+            <p className="text-lg font-semibold text-foreground">{formatNumber(pvValue)}</p>
           </div>
           <div>
             <p className="text-xs text-muted-foreground">今月の収益</p>

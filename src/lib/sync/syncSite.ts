@@ -23,6 +23,11 @@ function currentMonthStart() {
   return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01`;
 }
 
+function todayDate() {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+}
+
 export async function syncSite(
   supabase: SupabaseClient,
   site: Pick<Site, "id" | "user_id" | "custom_api_url" | "api_secret_key">
@@ -68,6 +73,13 @@ export async function syncSite(
     await supabase.from("pv_history").upsert(
       { site_id: site.id, user_id: site.user_id, year_month: monthStart, pv: data.pv },
       { onConflict: "site_id,year_month" }
+    );
+
+    // 週次表示のため、本日分のpv_todayを日付ごとに蓄積する。
+    // 1日に複数回同期しても同じ日付の行は上書きされる(その日最後の値になる)。
+    await supabase.from("pv_daily").upsert(
+      { site_id: site.id, user_id: site.user_id, date: todayDate(), pv_today: data.pv_today ?? 0 },
+      { onConflict: "site_id,date" }
     );
 
     // APIがrevenueを返すサイト(Stripe等の自動取得)のみ、revenue_historyも自動更新する。

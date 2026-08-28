@@ -18,29 +18,46 @@ import type { Site } from "@/types/site";
 
 interface SiteComparisonChartProps {
   sites: Site[];
+  weeklyPvBySite: Record<string, number>;
 }
 
-type PvMode = "pv" | "pv_total";
+type PvMode = "daily" | "weekly" | "monthly" | "total";
 
-export function SiteComparisonChart({ sites }: SiteComparisonChartProps) {
-  const [pvMode, setPvMode] = useState<PvMode>("pv");
+const PV_MODE_LABEL: Record<PvMode, string> = {
+  daily: "日次",
+  weekly: "週次",
+  monthly: "月次(30日)",
+  total: "累計",
+};
+
+export function SiteComparisonChart({ sites, weeklyPvBySite }: SiteComparisonChartProps) {
+  const [pvMode, setPvMode] = useState<PvMode>("monthly");
 
   const chartData = sites.map((site) => ({
     name: site.name,
-    pv: pvMode === "pv" ? site.pv : site.pv_total,
+    pv:
+      pvMode === "daily"
+        ? site.pv_today
+        : pvMode === "weekly"
+          ? weeklyPvBySite[site.id] ?? 0
+          : pvMode === "total"
+            ? site.pv_total
+            : site.pv,
     revenue: site.revenue,
   }));
 
-  const pvLabel = pvMode === "pv" ? "PV(30日)" : "累計PV";
+  const pvLabel = PV_MODE_LABEL[pvMode];
 
   return (
     <Card className="shadow-sm">
       <CardHeader className="flex flex-row items-center justify-between space-y-0">
         <CardTitle className="text-base font-semibold">サイト別 PV・収益</CardTitle>
-        <Tabs value={pvMode} onValueChange={(value) => setPvMode((value as PvMode) ?? "pv")}>
+        <Tabs value={pvMode} onValueChange={(value) => setPvMode((value as PvMode) ?? "monthly")}>
           <TabsList>
-            <TabsTrigger value="pv">30日</TabsTrigger>
-            <TabsTrigger value="pv_total">累計</TabsTrigger>
+            <TabsTrigger value="daily">日次</TabsTrigger>
+            <TabsTrigger value="weekly">週次</TabsTrigger>
+            <TabsTrigger value="monthly">月次</TabsTrigger>
+            <TabsTrigger value="total">累計</TabsTrigger>
           </TabsList>
         </Tabs>
       </CardHeader>

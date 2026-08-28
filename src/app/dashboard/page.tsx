@@ -5,20 +5,30 @@ import { MonthlyTrendChart } from "@/components/dashboard/monthly-trend-chart";
 import { SiteComparisonChart } from "@/components/dashboard/site-comparison-chart";
 import { SiteCard } from "@/components/dashboard/site-card";
 import { EmptyState } from "@/components/dashboard/empty-state";
-import type { PvHistoryRow, RevenueHistoryRow, Site } from "@/types/site";
+import { computeWeeklyPvBySite } from "@/lib/pv";
+import type { PvDailyRow, PvHistoryRow, RevenueHistoryRow, Site } from "@/types/site";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
 
-  const [{ data: sites }, { data: revenueHistory }, { data: pvHistory }] = await Promise.all([
-    supabase.from("sites").select("*").order("created_at", { ascending: true }),
-    supabase.from("revenue_history").select("*").order("year_month", { ascending: true }),
-    supabase.from("pv_history").select("*").order("year_month", { ascending: true }),
-  ]);
+  const fourteenDaysAgo = new Date();
+  fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
+
+  const [{ data: sites }, { data: revenueHistory }, { data: pvHistory }, { data: pvDaily }] =
+    await Promise.all([
+      supabase.from("sites").select("*").order("created_at", { ascending: true }),
+      supabase.from("revenue_history").select("*").order("year_month", { ascending: true }),
+      supabase.from("pv_history").select("*").order("year_month", { ascending: true }),
+      supabase
+        .from("pv_daily")
+        .select("*")
+        .gte("date", fourteenDaysAgo.toISOString().slice(0, 10)),
+    ]);
 
   const siteList = (sites ?? []) as Site[];
   const revenueList = (revenueHistory ?? []) as RevenueHistoryRow[];
   const pvHistoryList = (pvHistory ?? []) as PvHistoryRow[];
+  const weeklyPvBySite = computeWeeklyPvBySite((pvDaily ?? []) as PvDailyRow[]);
 
   const totalPv = siteList.reduce((sum, s) => sum + s.pv, 0);
   const totalPvToday = siteList.reduce((sum, s) => sum + s.pv_today, 0);
@@ -39,7 +49,7 @@ export default async function DashboardPage() {
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <MonthlyTrendChart sites={siteList} revenueHistory={revenueList} pvHistory={pvHistoryList} />
-          <SiteComparisonChart sites={siteList} />
+          <SiteComparisonChart sites={siteList} weeklyPvBySite={weeklyPvBySite} />
         </div>
 
         <div>
@@ -49,7 +59,7 @@ export default async function DashboardPage() {
           ) : (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {siteList.map((site) => (
-                <SiteCard key={site.id} site={site} />
+                <SiteCard key={site.id} site={site} weeklyPv={weeklyPvBySite[site.id] ?? 0} />
               ))}
             </div>
           )}

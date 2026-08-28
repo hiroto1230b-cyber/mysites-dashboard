@@ -34,3 +34,12 @@ export interface PvHistoryRow {
   pv: number;
   created_at: string;
 }
+
+export interface PvDailyRow {
+  id: string;
+  site_id: string;
+  user_id: string;
+  date: string;
+  pv_today: number;
+  created_at: string;
+}
