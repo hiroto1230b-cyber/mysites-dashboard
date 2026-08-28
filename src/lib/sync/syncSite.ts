@@ -6,6 +6,7 @@ interface SiteStatsResponse {
   pv?: number;
   pv_today?: number;
   pv_total?: number;
+  revenue?: number;
   updated_at?: string;
 }
 
@@ -45,12 +46,15 @@ export async function syncSite(
       throw new Error("レスポンスにpvが含まれていません");
     }
 
+    const hasRevenue = typeof data.revenue === "number";
+
     const { error } = await supabase
       .from("sites")
       .update({
         pv: data.pv,
         pv_today: data.pv_today ?? 0,
         pv_total: data.pv_total ?? 0,
+        ...(hasRevenue ? { revenue: data.revenue } : {}),
         status: "active",
         last_synced_at: new Date().toISOString(),
         last_sync_error: null,
@@ -59,10 +63,21 @@ export async function syncSite(
 
     if (error) throw new Error(error.message);
 
+    const monthStart = currentMonthStart();
+
     await supabase.from("pv_history").upsert(
-      { site_id: site.id, user_id: site.user_id, year_month: currentMonthStart(), pv: data.pv },
+      { site_id: site.id, user_id: site.user_id, year_month: monthStart, pv: data.pv },
       { onConflict: "site_id,year_month" }
     );
+
+    // APIがrevenueを返すサイト(Stripe等の自動取得)のみ、revenue_historyも自動更新する。
+    // 手動記録のサイトはここで上書きしない。
+    if (hasRevenue) {
+      await supabase.from("revenue_history").upsert(
+        { site_id: site.id, user_id: site.user_id, year_month: monthStart, revenue: data.revenue },
+        { onConflict: "site_id,year_month" }
+      );
+    }
 
     return { siteId: site.id, ok: true };
   } catch (err) {
