@@ -16,19 +16,17 @@ export async function POST(request: Request) {
   const body = await request.json().catch(() => ({}));
   const siteId: string | undefined = body?.siteId;
 
+  // 停止中(inactive)のサイトは、全体同期・個別同期のどちらでも対象外にする。
+  // ここで除外しないと、個別の「このサイトを同期」ボタンから停止設定が
+  // すり抜けてしまう(syncSite側でstatusをactiveに戻すこととも連動する不具合だった)。
   let query = supabase
     .from("sites")
-    .select("id, user_id, custom_api_url, api_secret_key")
+    .select("id, user_id, status, custom_api_url, api_secret_key")
     .eq("user_id", user.id)
     .eq("status", "active" as const);
 
-  // 個別同期の場合はステータスに関わらず対象にする
   if (siteId) {
-    query = supabase
-      .from("sites")
-      .select("id, user_id, custom_api_url, api_secret_key")
-      .eq("user_id", user.id)
-      .eq("id", siteId);
+    query = query.eq("id", siteId);
   }
 
   const { data: sites, error } = await query;

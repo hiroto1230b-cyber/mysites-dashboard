@@ -12,9 +12,18 @@ interface SyncButtonProps {
   label?: string;
   variant?: "default" | "outline" | "ghost";
   size?: "default" | "sm" | "icon";
+  disabled?: boolean;
+  disabledReason?: string;
 }
 
-export function SyncButton({ siteId, label = "同期", variant = "outline", size = "sm" }: SyncButtonProps) {
+export function SyncButton({
+  siteId,
+  label = "同期",
+  variant = "outline",
+  size = "sm",
+  disabled = false,
+  disabledReason,
+}: SyncButtonProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -60,7 +69,13 @@ export function SyncButton({ siteId, label = "同期", variant = "outline", size
   }
 
   return (
-    <Button variant={variant} size={size} onClick={handleSync} disabled={loading}>
+    <Button
+      variant={variant}
+      size={size}
+      onClick={handleSync}
+      disabled={loading || disabled}
+      title={disabled ? disabledReason : undefined}
+    >
       <RefreshCw className={`size-4 ${loading ? "animate-spin" : ""}`} />
       {size !== "icon" && (loading ? "同期中..." : label)}
     </Button>

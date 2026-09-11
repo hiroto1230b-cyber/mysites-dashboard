@@ -82,7 +82,7 @@ export function SiteCard({ site, weeklyPv }: { site: Site; weeklyPv: number }) {
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={() => setEditOpen(true)}>編集</DropdownMenuItem>
             <DropdownMenuItem onClick={() => setRevenueOpen(true)}>収益を記録</DropdownMenuItem>
-            <DropdownMenuItem onSelect={handleToggleActive}>
+            <DropdownMenuItem onClick={handleToggleActive}>
               {site.status === "inactive" ? "同期を再開する" : "同期を停止する"}
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -152,7 +152,12 @@ export function SiteCard({ site, weeklyPv }: { site: Site; weeklyPv: number }) {
               </>
             )}
           </Button>
-          <SyncButton siteId={site.id} label="このサイトを同期" />
+          <SyncButton
+            siteId={site.id}
+            label="このサイトを同期"
+            disabled={site.status === "inactive"}
+            disabledReason="同期を停止中です。再開してから同期してください"
+          />
         </div>
       </CardContent>
     </Card>
