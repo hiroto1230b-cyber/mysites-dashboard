@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { KpiSummary } from "@/components/dashboard/kpi-summary";
 import { MonthlyTrendChart } from "@/components/dashboard/monthly-trend-chart";
+import { DailyPvChart } from "@/components/dashboard/daily-pv-chart";
 import { SiteComparisonChart } from "@/components/dashboard/site-comparison-chart";
 import { SiteCard } from "@/components/dashboard/site-card";
 import { EmptyState } from "@/components/dashboard/empty-state";
@@ -11,8 +12,8 @@ import type { PvDailyRow, PvHistoryRow, RevenueHistoryRow, Site } from "@/types/
 export default async function DashboardPage() {
   const supabase = await createClient();
 
-  const fourteenDaysAgo = new Date();
-  fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14);
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
   const [{ data: sites }, { data: revenueHistory }, { data: pvHistory }, { data: pvDaily }] =
     await Promise.all([
@@ -22,7 +23,8 @@ export default async function DashboardPage() {
       supabase
         .from("pv_daily")
         .select("*")
-        .gte("date", fourteenDaysAgo.toISOString().slice(0, 10)),
+        .gte("date", thirtyDaysAgo.toISOString().slice(0, 10))
+        .order("date", { ascending: true }),
     ]);
 
   const siteList = (sites ?? []) as Site[];
@@ -49,6 +51,7 @@ export default async function DashboardPage() {
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <MonthlyTrendChart sites={siteList} revenueHistory={revenueList} pvHistory={pvHistoryList} />
+          <DailyPvChart sites={siteList} pvDaily={(pvDaily ?? []) as PvDailyRow[]} />
           <SiteComparisonChart sites={siteList} weeklyPvBySite={weeklyPvBySite} />
         </div>
 
