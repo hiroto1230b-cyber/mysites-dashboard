@@ -11,6 +11,11 @@ export interface Site {
   pv_today: number;
   pv_total: number;
   revenue: number;
+  unique_visitors: number | null;
+  paid_subscribers: number | null;
+  trialing: number | null;
+  mrr: number | null;
+  new_signups_7d: number | null;
   status: SiteStatus;
   last_synced_at: string | null;
   last_sync_error: string | null;

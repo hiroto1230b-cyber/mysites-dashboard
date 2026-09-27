@@ -7,7 +7,36 @@ interface SiteStatsResponse {
   pv_today?: number;
   pv_total?: number;
   revenue?: number;
+  unique_visitors_30d?: number | null;
+  paid_subscribers?: number | null;
+  trialing?: number | null;
+  mrr?: number | null;
+  new_signups_7d?: number | null;
   updated_at?: string;
+}
+
+// サイトが任意で返す事業指標。API のキー名 → sites テーブルの列名。
+const OPTIONAL_METRICS = {
+  unique_visitors_30d: "unique_visitors",
+  paid_subscribers: "paid_subscribers",
+  trialing: "trialing",
+  mrr: "mrr",
+  new_signups_7d: "new_signups_7d",
+} as const;
+
+/**
+ * レスポンスに含まれていたキーだけを列に反映する。
+ * キー自体が無い = そのサイトは報告していないので、既存の値に触らない。
+ * null が来た = 計測に失敗したので、古い値を残さず null にする。
+ */
+function pickOptionalMetrics(data: SiteStatsResponse) {
+  const update: Record<string, number | null> = {};
+  for (const [apiKey, column] of Object.entries(OPTIONAL_METRICS)) {
+    if (!(apiKey in data)) continue;
+    const value = data[apiKey as keyof typeof OPTIONAL_METRICS];
+    update[column] = typeof value === "number" ? value : null;
+  }
+  return update;
 }
 
 const FETCH_TIMEOUT_MS = 10_000;
@@ -60,6 +89,7 @@ export async function syncSite(
         pv_today: data.pv_today ?? 0,
         pv_total: data.pv_total ?? 0,
         ...(hasRevenue ? { revenue: data.revenue } : {}),
+        ...pickOptionalMetrics(data),
         status: "active",
         last_synced_at: new Date().toISOString(),
         last_sync_error: null,
