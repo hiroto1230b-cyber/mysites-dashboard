@@ -42,8 +42,13 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ id:
       <SiteDetailView site={siteRow} pvPeriods={pvPeriods[siteRow.id]} />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <MonthlyTrendChart sites={[siteRow]} revenueHistory={revenueList} pvHistory={pvHistoryList} />
-        <DailyPvChart sites={[siteRow]} pvDaily={pvDailyList} />
+        <MonthlyTrendChart
+          sites={[siteRow]}
+          revenueHistory={revenueList}
+          pvHistory={pvHistoryList}
+          fixedSiteId={siteRow.id}
+        />
+        <DailyPvChart sites={[siteRow]} pvDaily={pvDailyList} fixedSiteId={siteRow.id} />
       </div>
 
       <RevenueHistoryList revenueHistory={revenueList} />

@@ -9,6 +9,8 @@ import type { PvDailyRow, Site } from "@/types/site";
 interface DailyPvChartProps {
   sites: Site[];
   pvDaily: PvDailyRow[];
+  /** 指定すると、このサイトに固定してサイト選択セレクタを表示しない(サイト詳細ページ用) */
+  fixedSiteId?: string;
 }
 
 const ALL_SITES = "__all__";
@@ -18,8 +20,9 @@ function formatDayLabel(dateStr: string) {
   return `${d.getMonth() + 1}/${d.getDate()}`;
 }
 
-export function DailyPvChart({ sites, pvDaily }: DailyPvChartProps) {
-  const [selected, setSelected] = useState<string>(ALL_SITES);
+export function DailyPvChart({ sites, pvDaily, fixedSiteId }: DailyPvChartProps) {
+  const [selectedState, setSelected] = useState<string>(ALL_SITES);
+  const selected = fixedSiteId ?? selectedState;
 
   const chartData = useMemo(() => {
     const byDate = new Map<string, Map<string, number>>();
@@ -45,21 +48,23 @@ export function DailyPvChart({ sites, pvDaily }: DailyPvChartProps) {
     <Card className="shadow-sm">
       <CardHeader className="flex flex-row items-center justify-between space-y-0">
         <CardTitle className="text-base font-semibold">日次PV推移</CardTitle>
-        <Select value={selected} onValueChange={(value) => setSelected(value ?? ALL_SITES)}>
-          <SelectTrigger className="w-40" size="sm">
-            <SelectValue>
-              {selected === ALL_SITES ? "全サイト合算" : sites.find((s) => s.id === selected)?.name ?? "全サイト合算"}
-            </SelectValue>
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value={ALL_SITES}>全サイト合算</SelectItem>
-            {sites.map((site) => (
-              <SelectItem key={site.id} value={site.id}>
-                {site.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        {!fixedSiteId && (
+          <Select value={selected} onValueChange={(value) => setSelected(value ?? ALL_SITES)}>
+            <SelectTrigger className="w-40" size="sm">
+              <SelectValue>
+                {selected === ALL_SITES ? "全サイト合算" : sites.find((s) => s.id === selected)?.name ?? "全サイト合算"}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={ALL_SITES}>全サイト合算</SelectItem>
+              {sites.map((site) => (
+                <SelectItem key={site.id} value={site.id}>
+                  {site.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
       </CardHeader>
       <CardContent>
         {chartData.length === 0 ? (

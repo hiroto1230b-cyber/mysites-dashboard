@@ -21,6 +21,8 @@ interface MonthlyTrendChartProps {
   sites: Site[];
   revenueHistory: RevenueHistoryRow[];
   pvHistory: PvHistoryRow[];
+  /** 指定すると、このサイトに固定してサイト選択セレクタを表示しない(サイト詳細ページ用) */
+  fixedSiteId?: string;
 }
 
 const ALL_SITES = "__all__";
@@ -30,8 +32,9 @@ function formatMonthLabel(yearMonth: string) {
   return `${d.getFullYear()}/${d.getMonth() + 1}`;
 }
 
-export function MonthlyTrendChart({ sites, revenueHistory, pvHistory }: MonthlyTrendChartProps) {
-  const [selected, setSelected] = useState<string>(ALL_SITES);
+export function MonthlyTrendChart({ sites, revenueHistory, pvHistory, fixedSiteId }: MonthlyTrendChartProps) {
+  const [selectedState, setSelected] = useState<string>(ALL_SITES);
+  const selected = fixedSiteId ?? selectedState;
 
   const chartData = useMemo(() => {
     const pvByMonth = new Map<string, Map<string, number>>();
@@ -71,21 +74,23 @@ export function MonthlyTrendChart({ sites, revenueHistory, pvHistory }: MonthlyT
     <Card className="shadow-sm">
       <CardHeader className="flex flex-row items-center justify-between space-y-0">
         <CardTitle className="text-base font-semibold">月次PV・収益推移</CardTitle>
-        <Select value={selected} onValueChange={(value) => setSelected(value ?? ALL_SITES)}>
-          <SelectTrigger className="w-40" size="sm">
-            <SelectValue>
-              {selected === ALL_SITES ? "全サイト合算" : sites.find((s) => s.id === selected)?.name ?? "全サイト合算"}
-            </SelectValue>
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value={ALL_SITES}>全サイト合算</SelectItem>
-            {sites.map((site) => (
-              <SelectItem key={site.id} value={site.id}>
-                {site.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        {!fixedSiteId && (
+          <Select value={selected} onValueChange={(value) => setSelected(value ?? ALL_SITES)}>
+            <SelectTrigger className="w-40" size="sm">
+              <SelectValue>
+                {selected === ALL_SITES ? "全サイト合算" : sites.find((s) => s.id === selected)?.name ?? "全サイト合算"}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={ALL_SITES}>全サイト合算</SelectItem>
+              {sites.map((site) => (
+                <SelectItem key={site.id} value={site.id}>
+                  {site.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
       </CardHeader>
       <CardContent>
         {chartData.length === 0 ? (
