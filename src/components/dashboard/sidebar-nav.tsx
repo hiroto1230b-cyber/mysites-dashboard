@@ -29,7 +29,7 @@ export function SidebarNav({ sites }: SidebarNavProps) {
   const pathname = usePathname();
 
   return (
-    <nav className="w-56 shrink-0 space-y-4 px-3 py-6">
+    <nav className="sticky top-14 h-[calc(100vh-3.5rem)] w-56 shrink-0 space-y-4 overflow-y-auto px-3 py-6">
       <NavLink href="/dashboard" active={pathname === "/dashboard"}>
         <span className="flex items-center gap-2">
           <LayoutGrid className="size-4" />
