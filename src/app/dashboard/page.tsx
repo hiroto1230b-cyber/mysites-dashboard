@@ -1,5 +1,4 @@
 import { createClient } from "@/lib/supabase/server";
-import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { KpiSummary } from "@/components/dashboard/kpi-summary";
 import { MonthlyTrendChart } from "@/components/dashboard/monthly-trend-chart";
 import { DailyPvChart } from "@/components/dashboard/daily-pv-chart";
@@ -48,10 +47,7 @@ export default async function DashboardPage() {
   const activeSiteCount = siteList.filter((s) => s.status === "active").length;
 
   return (
-    <div className="flex-1">
-      <DashboardHeader />
-
-      <div className="mx-auto w-full max-w-6xl space-y-6 px-6 py-6">
+    <div className="space-y-6 px-6 py-6">
         <KpiSummary
           totalPv={totalPv}
           totalPvToday={totalPvToday}
@@ -81,7 +77,6 @@ export default async function DashboardPage() {
             </div>
           )}
         </div>
-      </div>
     </div>
   );
 }

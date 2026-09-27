@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { MoreVertical, ChevronDown, ChevronUp } from "lucide-react";
@@ -94,7 +95,12 @@ export function SiteCard({ site, pvPeriods }: { site: Site; pvPeriods: SitePvPer
       <CardHeader className="flex flex-row items-start justify-between gap-2 space-y-0">
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <h3 className="truncate font-semibold text-foreground">{site.name}</h3>
+            <Link
+              href={`/dashboard/sites/${site.id}`}
+              className="truncate font-semibold text-foreground hover:text-primary hover:underline"
+            >
+              {site.name}
+            </Link>
             <StatusBadge status={site.status} />
           </div>
           <a
@@ -192,7 +198,7 @@ export function SiteCard({ site, pvPeriods }: { site: Site; pvPeriods: SitePvPer
               </>
             ) : (
               <>
-                詳細 <ChevronDown className="size-3" />
+                もっと見る <ChevronDown className="size-3" />
               </>
             )}
           </Button>
