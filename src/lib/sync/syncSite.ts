@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Site } from "@/types/site";
+import type { Site, TrafficSource } from "@/types/site";
 
 interface SiteStatsResponse {
   site?: string;
@@ -12,6 +12,7 @@ interface SiteStatsResponse {
   trialing?: number | null;
   mrr?: number | null;
   new_signups_7d?: number | null;
+  sources?: TrafficSource[] | null;
   updated_at?: string;
 }
 
@@ -90,6 +91,8 @@ export async function syncSite(
         pv_total: data.pv_total ?? 0,
         ...(hasRevenue ? { revenue: data.revenue } : {}),
         ...pickOptionalMetrics(data),
+        // sourcesは配列なのでpickOptionalMetrics(数値専用)の対象外。同様に「キーがあれば反映」する。
+        ...("sources" in data ? { traffic_sources: data.sources ?? null } : {}),
         status: "active",
         last_synced_at: new Date().toISOString(),
         last_sync_error: null,

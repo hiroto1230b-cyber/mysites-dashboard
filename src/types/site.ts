@@ -1,5 +1,11 @@
 export type SiteStatus = "active" | "inactive" | "error";
 
+export interface TrafficSource {
+  source: string;
+  visitors: number;
+  signups: number;
+}
+
 export interface Site {
   id: string;
   user_id: string;
@@ -16,6 +22,7 @@ export interface Site {
   trialing: number | null;
   mrr: number | null;
   new_signups_7d: number | null;
+  traffic_sources: TrafficSource[] | null;
   status: SiteStatus;
   last_synced_at: string | null;
   last_sync_error: string | null;

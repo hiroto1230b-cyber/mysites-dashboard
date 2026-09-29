@@ -4,6 +4,7 @@ import { SiteDetailView } from "@/components/dashboard/site-detail-view";
 import { MonthlyTrendChart } from "@/components/dashboard/monthly-trend-chart";
 import { DailyPvChart } from "@/components/dashboard/daily-pv-chart";
 import { RevenueHistoryList } from "@/components/dashboard/revenue-history-list";
+import { TrafficSourcesCard } from "@/components/dashboard/traffic-sources-card";
 import { computePvPeriods } from "@/lib/pv";
 import type { PvDailyRow, PvHistoryRow, RevenueHistoryRow, Site } from "@/types/site";
 
@@ -51,7 +52,10 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ id:
         <DailyPvChart sites={[siteRow]} pvDaily={pvDailyList} fixedSiteId={siteRow.id} />
       </div>
 
-      <RevenueHistoryList revenueHistory={revenueList} />
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <RevenueHistoryList revenueHistory={revenueList} />
+        {siteRow.traffic_sources && <TrafficSourcesCard sources={siteRow.traffic_sources} />}
+      </div>
     </div>
   );
 }
