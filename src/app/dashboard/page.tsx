@@ -6,6 +6,7 @@ import { SiteComparisonChart } from "@/components/dashboard/site-comparison-char
 import { SiteCard } from "@/components/dashboard/site-card";
 import { EmptyState } from "@/components/dashboard/empty-state";
 import { computePvPeriods } from "@/lib/pv";
+import { computeRevenuesBySite } from "@/lib/revenue";
 import type { PvDailyRow, PvHistoryRow, RevenueHistoryRow, Site } from "@/types/site";
 
 /** 値を報告しているサイトだけを合計する。1つも報告していなければ null(未計測) */
@@ -62,7 +63,11 @@ export default async function DashboardPage() {
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <MonthlyTrendChart sites={siteList} revenueHistory={revenueList} pvHistory={pvHistoryList} />
           <DailyPvChart sites={siteList} pvDaily={pvDailyList} />
-          <SiteComparisonChart sites={siteList} weeklyPvBySite={weeklyPvBySite} />
+          <SiteComparisonChart
+            sites={siteList}
+            weeklyPvBySite={weeklyPvBySite}
+            revenuesBySite={computeRevenuesBySite(siteList, revenueList)}
+          />
         </div>
 
         <div>
