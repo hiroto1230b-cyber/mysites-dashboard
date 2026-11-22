@@ -137,7 +137,7 @@ export function SiteDetailView({ site, pvPeriods }: { site: Site; pvPeriods: Sit
       </div>
 
       {site.last_sync_error && (
-        <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{site.last_sync_error}</p>
+        <p className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-300">{site.last_sync_error}</p>
       )}
 
       <Card className="shadow-sm">

@@ -100,11 +100,11 @@ export function MonthlyTrendChart({ sites, revenueHistory, pvHistory, fixedSiteI
         ) : (
           <ResponsiveContainer width="100%" height={280}>
             <ComposedChart data={chartData} margin={{ top: 24, right: 8, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e5ea" />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
               <XAxis
                 dataKey="month"
                 tick={{ fontSize: 12, fill: "#8e8e93" }}
-                axisLine={{ stroke: "#e5e5ea" }}
+                axisLine={{ stroke: "var(--border)" }}
                 tickLine={false}
               />
               <YAxis
@@ -131,7 +131,7 @@ export function MonthlyTrendChart({ sites, revenueHistory, pvHistory, fixedSiteI
                     ? [`¥${new Intl.NumberFormat("ja-JP").format(Number(value))}`, "収益"]
                     : [new Intl.NumberFormat("ja-JP").format(Number(value)), "PV(30日)"]
                 }
-                contentStyle={{ borderRadius: 12, borderColor: "#e5e5ea", fontSize: 12 }}
+                contentStyle={{ borderRadius: 12, borderColor: "var(--border)", backgroundColor: "var(--popover)", color: "var(--popover-foreground)", fontSize: 12 }}
               />
               <Legend
                 formatter={(value) => (value === "revenue" ? "収益" : "PV(30日)")}
@@ -142,7 +142,7 @@ export function MonthlyTrendChart({ sites, revenueHistory, pvHistory, fixedSiteI
                   dataKey="pv"
                   position="top"
                   formatter={(value) => new Intl.NumberFormat("ja-JP").format(Number(value ?? 0))}
-                  style={{ fontSize: 11, fill: "#3a3a3c" }}
+                  style={{ fontSize: 11, fill: "var(--foreground)" }}
                 />
               </Bar>
               <Line

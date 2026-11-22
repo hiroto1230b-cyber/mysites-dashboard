@@ -21,6 +21,7 @@ import { SiteSettingsDialog } from "@/components/dashboard/site-settings-dialog"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { setSiteActive } from "@/app/dashboard/actions";
 import { changeRate, type PvPeriod, type SitePvPeriods } from "@/lib/pv";
+import { goalProgress, profitSummary } from "@/lib/business";
 import type { Site } from "@/types/site";
 
 const PV_LABEL: Record<PvPeriod, string> = {
@@ -72,6 +73,8 @@ export function SiteCard({ site, pvPeriods }: { site: Site; pvPeriods: SitePvPer
   const [pvPeriod, setPvPeriod] = useState<PvPeriod>("monthly");
 
   const period = pvPeriods[pvPeriod];
+  const profit = profitSummary(site);
+  const goals = goalProgress(site);
 
   // サイトが報告している事業指標だけを並べる(報告していない指標は出さない)
   const businessMetrics = [
@@ -136,7 +139,7 @@ export function SiteCard({ site, pvPeriods }: { site: Site; pvPeriods: SitePvPer
 
       <CardContent className="space-y-3">
         {site.last_sync_error && (
-          <p className="truncate rounded-md bg-red-50 px-2 py-1 text-xs text-red-700">
+          <p className="truncate rounded-md bg-red-50 px-2 py-1 text-xs text-red-700 dark:bg-red-950/40 dark:text-red-300">
             {site.last_sync_error}
           </p>
         )}
@@ -169,6 +172,40 @@ export function SiteCard({ site, pvPeriods }: { site: Site; pvPeriods: SitePvPer
                 <p className="text-sm font-semibold text-foreground">{m.format(m.value)}</p>
               </div>
             ))}
+          </div>
+        )}
+
+        {(profit || goals.length > 0) && (
+          <div className="space-y-2 border-t border-border pt-3">
+            {profit && (
+              <p className="flex items-baseline justify-between text-xs">
+                <span className="text-muted-foreground">月の損益</span>
+                <span>
+                  <span className={`font-semibold ${profit.profit >= 0 ? "text-green-600" : "text-red-600"}`}>
+                    {profit.profit >= 0 ? "+" : "−"}¥{formatNumber(Math.abs(profit.profit))}
+                  </span>
+                  {profit.shortfall > 0 && profit.contractsNeeded !== null && (
+                    <span className="ml-1 text-muted-foreground">(あと{profit.contractsNeeded}契約)</span>
+                  )}
+                </span>
+              </p>
+            )}
+            {goals.map((goal) =>
+              goal.current === null || goal.target <= 0 ? null : (
+                <div key={goal.label} className="space-y-0.5">
+                  <p className="flex justify-between text-[11px] text-muted-foreground">
+                    <span>目標 {goal.label}</span>
+                    <span>{Math.round((goal.current / goal.target) * 100)}%</span>
+                  </p>
+                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                    <div
+                      className={`h-full rounded-full ${goal.current >= goal.target ? "bg-green-500" : "bg-primary"}`}
+                      style={{ width: `${Math.min(goal.current / goal.target, 1) * 100}%` }}
+                    />
+                  </div>
+                </div>
+              )
+            )}
           </div>
         )}
 

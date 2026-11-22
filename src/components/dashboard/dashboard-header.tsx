@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { SyncButton } from "@/components/dashboard/sync-button";
 import { SiteFormDialog } from "@/components/dashboard/site-form-dialog";
 import { signOut } from "@/app/auth/actions";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export function DashboardHeader() {
   const [addOpen, setAddOpen] = useState(false);
@@ -20,6 +21,7 @@ export function DashboardHeader() {
             <Plus className="size-4" />
             <span className="hidden sm:inline">サイト追加</span>
           </Button>
+          <ThemeToggle />
           <form action={signOut}>
             <Button type="submit" variant="ghost" size="icon" title="ログアウト">
               <LogOut className="size-4" />

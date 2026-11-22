@@ -115,6 +115,24 @@ export async function syncSite(
       { onConflict: "site_id,date" }
     );
 
+    // MRR・有料会員などの推移を見るため、本日分の事業指標を記録する。
+    // 報告していない指標は null(0 と区別する)。結果は見ない: 記録の失敗で同期全体を失敗扱いにしない
+    const metricOrNull = (v: unknown) => (typeof v === "number" ? v : null);
+    await supabase.from("metrics_daily").upsert(
+      {
+        site_id: site.id,
+        user_id: site.user_id,
+        date: todayDate(),
+        pv: data.pv,
+        unique_visitors: metricOrNull(data.unique_visitors_30d),
+        paid_subscribers: metricOrNull(data.paid_subscribers),
+        trialing: metricOrNull(data.trialing),
+        mrr: metricOrNull(data.mrr),
+        revenue: hasRevenue ? data.revenue : null,
+      },
+      { onConflict: "site_id,date" }
+    );
+
     // APIがrevenueを返すサイト(Stripe等の自動取得)のみ、revenue_historyも自動更新する。
     // 手動記録のサイトはここで上書きしない。
     if (hasRevenue) {

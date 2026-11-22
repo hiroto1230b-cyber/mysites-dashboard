@@ -4,7 +4,7 @@ import type { SiteStatus } from "@/types/site";
 const STATUS_CONFIG: Record<SiteStatus, { label: string; className: string }> = {
   active: { label: "稼働中", className: "bg-accent text-accent-foreground" },
   inactive: { label: "停止中", className: "bg-muted text-muted-foreground" },
-  error: { label: "同期失敗", className: "bg-red-50 text-red-700" },
+  error: { label: "同期失敗", className: "bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-300" },
 };
 
 export function StatusBadge({ status }: { status: SiteStatus }) {

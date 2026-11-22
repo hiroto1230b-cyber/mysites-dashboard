@@ -100,18 +100,18 @@ export function DailyPvChart({ sites, pvDaily, fixedSiteId }: DailyPvChartProps)
           <>
             <ResponsiveContainer width="100%" height={240}>
               <LineChart data={chartData} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e5ea" />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                 <XAxis
                   dataKey="date"
                   tick={{ fontSize: 11, fill: "#8e8e93" }}
-                  axisLine={{ stroke: "#e5e5ea" }}
+                  axisLine={{ stroke: "var(--border)" }}
                   tickLine={false}
                   interval="preserveStartEnd"
                 />
                 <YAxis tick={{ fontSize: 12, fill: "#8e8e93" }} axisLine={false} tickLine={false} width={50} />
                 <Tooltip
                   formatter={(value) => [new Intl.NumberFormat("ja-JP").format(Number(value)), "PV"]}
-                  contentStyle={{ borderRadius: 12, borderColor: "#e5e5ea", fontSize: 12 }}
+                  contentStyle={{ borderRadius: 12, borderColor: "var(--border)", backgroundColor: "var(--popover)", color: "var(--popover-foreground)", fontSize: 12 }}
                 />
                 <Line type="monotone" dataKey="pv" stroke="#34c759" strokeWidth={2.5} dot={{ r: 3 }} />
               </LineChart>

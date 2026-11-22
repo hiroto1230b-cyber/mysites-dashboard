@@ -57,6 +57,20 @@ export interface PvHistoryRow {
   created_at: string;
 }
 
+export interface MetricsDailyRow {
+  id: string;
+  site_id: string;
+  user_id: string;
+  date: string;
+  pv: number | null;
+  unique_visitors: number | null;
+  paid_subscribers: number | null;
+  trialing: number | null;
+  mrr: number | null;
+  revenue: number | null;
+  created_at: string;
+}
+
 export interface PvDailyRow {
   id: string;
   site_id: string;
