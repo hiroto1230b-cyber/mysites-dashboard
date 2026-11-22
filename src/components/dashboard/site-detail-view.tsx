@@ -19,7 +19,7 @@ import { SiteFormDialog } from "@/components/dashboard/site-form-dialog";
 import { RevenueFormDialog } from "@/components/dashboard/revenue-form-dialog";
 import { SiteSettingsDialog } from "@/components/dashboard/site-settings-dialog";
 import { setSiteActive } from "@/app/dashboard/actions";
-import { changeRate, type PvPeriod, type SitePvPeriods } from "@/lib/pv";
+import { changeRate, pvTotalLabel, type PvPeriod, type SitePvPeriods } from "@/lib/pv";
 import type { Site } from "@/types/site";
 
 const PV_LABEL: Record<PvPeriod, string> = {
@@ -165,7 +165,7 @@ export function SiteDetailView({ site, pvPeriods }: { site: Site; pvPeriods: Sit
               </p>
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">累計PV</p>
+              <p className="text-xs text-muted-foreground">{pvTotalLabel(site)}</p>
               <p className="mt-1 text-2xl font-semibold tracking-tight text-foreground">
                 {formatNumber(site.pv_total)}
               </p>

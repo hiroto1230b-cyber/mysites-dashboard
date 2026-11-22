@@ -20,7 +20,7 @@ import { RevenueFormDialog } from "@/components/dashboard/revenue-form-dialog";
 import { SiteSettingsDialog } from "@/components/dashboard/site-settings-dialog";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { setSiteActive } from "@/app/dashboard/actions";
-import { changeRate, type PvPeriod, type SitePvPeriods } from "@/lib/pv";
+import { changeRate, pvTotalLabel, type PvPeriod, type SitePvPeriods } from "@/lib/pv";
 import { goalProgress, profitSummary } from "@/lib/business";
 import type { Site } from "@/types/site";
 
@@ -216,7 +216,7 @@ export function SiteCard({ site, pvPeriods }: { site: Site; pvPeriods: SitePvPer
               <p className="text-sm font-medium text-foreground/80">{formatNumber(site.pv_today)}</p>
             </div>
             <div>
-              <p className="text-xs text-muted-foreground">累計PV</p>
+              <p className="text-xs text-muted-foreground">{pvTotalLabel(site)}</p>
               <p className="text-sm font-medium text-foreground/80">{formatNumber(site.pv_total)}</p>
             </div>
             <div className="col-span-2">

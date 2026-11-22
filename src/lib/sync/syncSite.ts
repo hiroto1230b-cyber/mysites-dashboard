@@ -6,6 +6,7 @@ interface SiteStatsResponse {
   pv?: number;
   pv_today?: number;
   pv_total?: number;
+  pv_total_window_days?: number | null;
   revenue?: number;
   unique_visitors_30d?: number | null;
   paid_subscribers?: number | null;
@@ -23,6 +24,7 @@ const OPTIONAL_METRICS = {
   trialing: "trialing",
   mrr: "mrr",
   new_signups_7d: "new_signups_7d",
+  pv_total_window_days: "pv_total_window_days",
 } as const;
 
 /**

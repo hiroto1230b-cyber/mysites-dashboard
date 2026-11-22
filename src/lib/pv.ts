@@ -74,6 +74,15 @@ export function computePvPeriods(
   return result;
 }
 
+/**
+ * pv_total の見出し。サイトが古いアクセス記録を消している場合、pv_total は累計ではなく
+ * 「直近N日の合計」なので、累計と書くと実態より大きく誤解される。
+ */
+export function pvTotalLabel(site: Site): string {
+  const days = site.pv_total_window_days;
+  return typeof days === "number" && days > 0 ? `PV(直近${days}日)` : "累計PV";
+}
+
 /** 前期比(%)。比較できない(前期データ無し・前期0)ときは null */
 export function changeRate({ current, previous }: PeriodValue): number | null {
   if (previous === null || previous === 0) return null;

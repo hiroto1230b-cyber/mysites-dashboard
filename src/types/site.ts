@@ -19,6 +19,8 @@ export interface Site {
   pv: number;
   pv_today: number;
   pv_total: number;
+  /** pv_total が直近何日分か。null なら本当の累計(サイト側で古い記録を消していない) */
+  pv_total_window_days: number | null;
   revenue: number;
   unique_visitors: number | null;
   paid_subscribers: number | null;
