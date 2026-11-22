@@ -14,6 +14,8 @@ interface SyncButtonProps {
   size?: "default" | "sm" | "icon";
   disabled?: boolean;
   disabledReason?: string;
+  /** スマホ幅ではアイコンだけにする(ヘッダーなど横幅が足りない場所用) */
+  compactOnMobile?: boolean;
 }
 
 export function SyncButton({
@@ -23,6 +25,7 @@ export function SyncButton({
   size = "sm",
   disabled = false,
   disabledReason,
+  compactOnMobile = false,
 }: SyncButtonProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -77,7 +80,9 @@ export function SyncButton({
       title={disabled ? disabledReason : undefined}
     >
       <RefreshCw className={`size-4 ${loading ? "animate-spin" : ""}`} />
-      {size !== "icon" && (loading ? "同期中..." : label)}
+      {size !== "icon" && (
+        <span className={compactOnMobile ? "hidden sm:inline" : undefined}>{loading ? "同期中..." : label}</span>
+      )}
     </Button>
   );
 }

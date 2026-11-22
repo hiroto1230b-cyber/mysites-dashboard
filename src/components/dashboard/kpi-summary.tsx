@@ -4,7 +4,9 @@ interface KpiSummaryProps {
   totalPv: number;
   totalPvToday: number;
   totalRevenue: number;
-  activeSiteCount: number;
+  /** 月額コストを設定したサイトだけの損益合計。1つも設定が無ければ null */
+  totalProfit: number | null;
+  costConfiguredCount: number;
   // 以下はサイト側が報告しているときだけ値が入る。どのサイトも報告していなければ null
   totalUniqueVisitors: number | null;
   totalPaidSubscribers: number | null;
@@ -20,6 +22,9 @@ interface KpiItem {
   label: string;
   value: string | null;
   note?: string;
+  /** value が null のときの表示。計測できない値は「未計測」、手入力が無い値は「未設定」 */
+  emptyLabel?: string;
+  valueClassName?: string;
 }
 
 function KpiGrid({ items }: { items: KpiItem[] }) {
@@ -30,9 +35,13 @@ function KpiGrid({ items }: { items: KpiItem[] }) {
           <CardContent className="py-2">
             <p className="text-xs text-muted-foreground">{item.label}</p>
             {item.value === null ? (
-              <p className="mt-1 text-2xl font-semibold tracking-tight text-muted-foreground/60">未計測</p>
+              <p className="mt-1 text-2xl font-semibold tracking-tight text-muted-foreground/60">
+                {item.emptyLabel ?? "未計測"}
+              </p>
             ) : (
-              <p className="mt-1 text-2xl font-semibold tracking-tight text-foreground">{item.value}</p>
+              <p className={`mt-1 text-2xl font-semibold tracking-tight ${item.valueClassName ?? "text-foreground"}`}>
+                {item.value}
+              </p>
             )}
             {item.note && <p className="mt-0.5 text-[11px] text-muted-foreground">{item.note}</p>}
           </CardContent>
@@ -52,7 +61,17 @@ export function KpiSummary(props: KpiSummaryProps) {
           { label: "総PV(30日)", value: formatNumber(props.totalPv) },
           { label: "本日のPV", value: formatNumber(props.totalPvToday) },
           { label: "今月の収益合計", value: `¥${formatNumber(props.totalRevenue)}` },
-          { label: "稼働中サイト数", value: `${props.activeSiteCount}件` },
+          {
+            label: "月の損益",
+            value: orNull(props.totalProfit, (n) => `${n >= 0 ? "+" : "−"}¥${formatNumber(Math.abs(n))}`),
+            emptyLabel: "未設定",
+            note:
+              props.totalProfit === null
+                ? "サイトの「経営設定」でコストを入れると出ます"
+                : `コスト設定済み${props.costConfiguredCount}サイトの合計`,
+            valueClassName:
+              props.totalProfit === null ? undefined : props.totalProfit >= 0 ? "text-green-600" : "text-red-600",
+          },
         ]}
       />
       <KpiGrid

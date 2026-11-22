@@ -5,6 +5,7 @@ import { MonthlyTrendChart } from "@/components/dashboard/monthly-trend-chart";
 import { DailyPvChart } from "@/components/dashboard/daily-pv-chart";
 import { RevenueHistoryList } from "@/components/dashboard/revenue-history-list";
 import { TrafficSourcesCard } from "@/components/dashboard/traffic-sources-card";
+import { BusinessHealthCard } from "@/components/dashboard/business-health-card";
 import { computePvPeriods } from "@/lib/pv";
 import type { PvDailyRow, PvHistoryRow, RevenueHistoryRow, Site } from "@/types/site";
 
@@ -12,8 +13,9 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ id:
   const { id } = await params;
   const supabase = await createClient();
 
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  // 日次グラフで最大90日まで遡れるようにする
+  const since = new Date();
+  since.setDate(since.getDate() - 90);
 
   const [{ data: site, error }, { data: revenueHistory }, { data: pvHistory }, { data: pvDaily }] =
     await Promise.all([
@@ -24,7 +26,7 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ id:
         .from("pv_daily")
         .select("*")
         .eq("site_id", id)
-        .gte("date", thirtyDaysAgo.toISOString().slice(0, 10))
+        .gte("date", since.toISOString().slice(0, 10))
         .order("date", { ascending: true }),
     ]);
 
@@ -39,8 +41,10 @@ export default async function SiteDetailPage({ params }: { params: Promise<{ id:
   const pvPeriods = computePvPeriods([siteRow], pvDailyList, pvHistoryList);
 
   return (
-    <div className="space-y-6 px-6 py-6">
+    <div className="space-y-6 px-4 py-6 sm:px-6">
       <SiteDetailView site={siteRow} pvPeriods={pvPeriods[siteRow.id]} />
+
+      <BusinessHealthCard site={siteRow} />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <MonthlyTrendChart

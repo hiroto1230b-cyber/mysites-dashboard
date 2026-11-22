@@ -71,6 +71,30 @@ export async function setSiteActive(siteId: string, active: boolean) {
   revalidatePath("/dashboard");
 }
 
+export interface SiteSettingsInput {
+  pillar: "1" | "2" | "3" | null;
+  monthly_cost: number | null;
+  unit_price: number | null;
+  target_pv: number | null;
+  target_revenue: number | null;
+  target_paid_subscribers: number | null;
+}
+
+export async function updateSiteSettings(siteId: string, input: SiteSettingsInput) {
+  const { supabase } = await requireUser();
+
+  const { error } = await supabase.from("sites").update(input).eq("id", siteId);
+
+  if (error) {
+    // 経営設定の列を追加するSQLが未実行だと、ここで「列が無い」エラーになる
+    if (error.message.includes("column")) {
+      throw new Error("経営設定の列がまだありません。supabase/add_site_settings.sql を実行してください");
+    }
+    throw new Error(error.message);
+  }
+  revalidatePath("/dashboard", "layout");
+}
+
 export async function upsertMonthlyRevenue(siteId: string, yearMonth: string, revenue: number) {
   const { supabase, user } = await requireUser();
 

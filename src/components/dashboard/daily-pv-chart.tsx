@@ -4,7 +4,18 @@ import { useMemo, useState } from "react";
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { PvDailyRow, Site } from "@/types/site";
+
+const RANGES = [7, 30, 90] as const;
+type Range = (typeof RANGES)[number];
+
+/** pv_daily.date と同じ YYYY-MM-DD 形式で n 日前を出す(Date 比較だとタイムゾーンでずれるため文字列で比べる) */
+function daysAgoKey(days: number) {
+  const d = new Date();
+  d.setDate(d.getDate() - days);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
 
 interface DailyPvChartProps {
   sites: Site[];
@@ -23,11 +34,14 @@ function formatDayLabel(dateStr: string) {
 export function DailyPvChart({ sites, pvDaily, fixedSiteId }: DailyPvChartProps) {
   const [selectedState, setSelected] = useState<string>(ALL_SITES);
   const selected = fixedSiteId ?? selectedState;
+  const [range, setRange] = useState<Range>(30);
 
   const chartData = useMemo(() => {
     const byDate = new Map<string, Map<string, number>>();
+    const from = daysAgoKey(range - 1);
 
     for (const row of pvDaily) {
+      if (row.date < from) continue;
       if (!byDate.has(row.date)) byDate.set(row.date, new Map());
       byDate.get(row.date)!.set(row.site_id, row.pv_today);
     }
@@ -42,12 +56,22 @@ export function DailyPvChart({ sites, pvDaily, fixedSiteId }: DailyPvChartProps)
           : bySite.get(selected) ?? 0;
       return { date: formatDayLabel(date), pv };
     });
-  }, [pvDaily, selected]);
+  }, [pvDaily, selected, range]);
 
   return (
     <Card className="shadow-sm">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0">
+      <CardHeader className="flex flex-row flex-wrap items-center justify-between gap-2 space-y-0">
         <CardTitle className="text-base font-semibold">日次PV推移</CardTitle>
+        <div className="flex items-center gap-2">
+        <Tabs value={String(range)} onValueChange={(value) => setRange(Number(value) as Range)}>
+          <TabsList>
+            {RANGES.map((r) => (
+              <TabsTrigger key={r} value={String(r)}>
+                {r}日
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
         {!fixedSiteId && (
           <Select value={selected} onValueChange={(value) => setSelected(value ?? ALL_SITES)}>
             <SelectTrigger className="w-40" size="sm">
@@ -65,6 +89,7 @@ export function DailyPvChart({ sites, pvDaily, fixedSiteId }: DailyPvChartProps)
             </SelectContent>
           </Select>
         )}
+        </div>
       </CardHeader>
       <CardContent>
         {chartData.length === 0 ? (

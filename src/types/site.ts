@@ -1,5 +1,8 @@
 export type SiteStatus = "active" | "inactive" | "error";
 
+/** 事業の柱。①本業(ストック収益) ②広告収益 ③個人向けサブスク */
+export type Pillar = "1" | "2" | "3";
+
 export interface TrafficSource {
   source: string;
   visitors: number;
@@ -23,6 +26,13 @@ export interface Site {
   mrr: number | null;
   new_signups_7d: number | null;
   traffic_sources: TrafficSource[] | null;
+  // 経営設定(手入力)。未設定は null
+  pillar: Pillar | null;
+  monthly_cost: number | null;
+  unit_price: number | null;
+  target_pv: number | null;
+  target_revenue: number | null;
+  target_paid_subscribers: number | null;
   status: SiteStatus;
   last_synced_at: string | null;
   last_sync_error: string | null;

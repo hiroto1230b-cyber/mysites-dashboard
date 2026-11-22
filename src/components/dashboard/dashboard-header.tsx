@@ -12,13 +12,13 @@ export function DashboardHeader() {
 
   return (
     <div className="sticky top-0 z-10 border-b border-border/60 bg-background/70 backdrop-blur-md">
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-6 py-3">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">MySites Dashboard</h1>
-        <div className="flex items-center gap-2">
-          <SyncButton label="全体を同期" />
-          <Button size="sm" onClick={() => setAddOpen(true)}>
+      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-2 px-4 py-3 sm:gap-4 sm:px-6">
+        <h1 className="truncate text-lg font-semibold tracking-tight text-foreground sm:text-xl">MySites Dashboard</h1>
+        <div className="flex shrink-0 items-center gap-2">
+          <SyncButton label="全体を同期" compactOnMobile />
+          <Button size="sm" onClick={() => setAddOpen(true)} title="サイト追加">
             <Plus className="size-4" />
-            サイト追加
+            <span className="hidden sm:inline">サイト追加</span>
           </Button>
           <form action={signOut}>
             <Button type="submit" variant="ghost" size="icon" title="ログアウト">

@@ -17,6 +17,7 @@ import { StatusBadge } from "@/components/dashboard/status-badge";
 import { SyncButton } from "@/components/dashboard/sync-button";
 import { SiteFormDialog } from "@/components/dashboard/site-form-dialog";
 import { RevenueFormDialog } from "@/components/dashboard/revenue-form-dialog";
+import { SiteSettingsDialog } from "@/components/dashboard/site-settings-dialog";
 import { setSiteActive } from "@/app/dashboard/actions";
 import { changeRate, type PvPeriod, type SitePvPeriods } from "@/lib/pv";
 import type { Site } from "@/types/site";
@@ -66,6 +67,7 @@ export function SiteDetailView({ site, pvPeriods }: { site: Site; pvPeriods: Sit
   const router = useRouter();
   const [editOpen, setEditOpen] = useState(false);
   const [revenueOpen, setRevenueOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [pvPeriod, setPvPeriod] = useState<PvPeriod>("monthly");
 
   const period = pvPeriods[pvPeriod];
@@ -110,6 +112,7 @@ export function SiteDetailView({ site, pvPeriods }: { site: Site; pvPeriods: Sit
           <SyncButton
             siteId={site.id}
             label="このサイトを同期"
+            compactOnMobile
             disabled={site.status === "inactive"}
             disabledReason="同期を停止中です。再開してから同期してください"
           />
@@ -120,6 +123,7 @@ export function SiteDetailView({ site, pvPeriods }: { site: Site; pvPeriods: Sit
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => setEditOpen(true)}>編集</DropdownMenuItem>
               <DropdownMenuItem onClick={() => setRevenueOpen(true)}>収益を記録</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setSettingsOpen(true)}>経営設定(コスト・目標)</DropdownMenuItem>
               <DropdownMenuItem onClick={handleToggleActive}>
                 {site.status === "inactive" ? "同期を再開する" : "同期を停止する"}
               </DropdownMenuItem>
@@ -129,6 +133,7 @@ export function SiteDetailView({ site, pvPeriods }: { site: Site; pvPeriods: Sit
 
         <SiteFormDialog site={site} open={editOpen} onOpenChange={setEditOpen} />
         <RevenueFormDialog site={site} open={revenueOpen} onOpenChange={setRevenueOpen} />
+        <SiteSettingsDialog site={site} open={settingsOpen} onOpenChange={setSettingsOpen} />
       </div>
 
       {site.last_sync_error && (
